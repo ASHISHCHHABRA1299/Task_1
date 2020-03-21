@@ -35,39 +35,44 @@ public class Login extends AppCompatActivity {
         b2=(Button)findViewById(R.id.b2);
         t2=(TextView)findViewById(R.id.signup);
         progressDialog=new ProgressDialog(this);
-    }
-    void login(View v)
-    {
-        Intent i= new Intent(Login.this,signup.class);
-        startActivity(i);
-    }
-    void userlogin(View v)
-    {
-        String email=e3.getText().toString().trim();
-        String password=e4.getText().toString().trim();
-        if(TextUtils.isEmpty(email))
-        {
-            Toast.makeText(this, "PLEASE ENTER EMAIL", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(TextUtils.isEmpty(password))
-        {
-            Toast.makeText(this, "PLEASE ENTER PASSWORD", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        progressDialog.setMessage(" LOGGING IN...");
-        progressDialog.show();
-        firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        t2.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful())
+            public void onClick(View view) {
+                Intent i= new Intent(Login.this,signup.class);
+                startActivity(i);
+            }
+        });
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String email=e3.getText().toString().trim();
+                String password=e4.getText().toString().trim();
+                if(TextUtils.isEmpty(email))
                 {
-                    finish(); // to end the current activity
-                    Intent i= new Intent(Login.this,detailspreview.class);
-                    startActivity(i);
+                    Toast.makeText(Login.this, "PLEASE ENTER EMAIL", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                if(TextUtils.isEmpty(password))
+                {
+                    Toast.makeText(Login.this, "PLEASE ENTER PASSWORD", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                progressDialog.setMessage(" LOGGING IN...");
+                progressDialog.show();
+                firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful())
+                        {
 
+                            Intent i= new Intent(Login.this,detailspreview.class);
+                            startActivity(i);
+                        }
+
+                    }
+                });
             }
         });
     }
+
 }

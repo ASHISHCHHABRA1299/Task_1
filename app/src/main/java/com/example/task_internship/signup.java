@@ -25,6 +25,7 @@ public class signup extends AppCompatActivity {
     TextView t1;
     ProgressDialog progressDialog;
     FirebaseAuth firebaseAuth;
+    String UID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,42 +37,50 @@ public class signup extends AppCompatActivity {
         b1=(Button) findViewById(R.id.b1);
         t1=(TextView)findViewById(R.id.signin);
         progressDialog=new ProgressDialog(this);
-    }
-    void registered(View v){
-        Intent in=new Intent(signup.this,Login.class);
-        startActivity(in);
-    }
-    void registeruser(View v) {
-        String email = e1.getText().toString().trim();
-        String password = e2.getText().toString().trim();
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "PLEASE ENTER EMAIL", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "PLEASE ENTER PASSWORD", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        progressDialog.setMessage("REGISTERING USER...");
-        progressDialog.show();
-
-        firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        t1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful())
-                {
-                    Toast.makeText(signup.this, "REGISTERED SUCCESSFULLY", Toast.LENGTH_SHORT).show();
-                    finish(); // to end the current activity
-                    Intent i = new Intent(signup.this,detailsactivity.class );
-                    startActivity(i);
-
-                }else
-                {
-                    Toast.makeText(signup.this, "COULD NOT REGISTER, TRY AGAIN!", Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                Intent in=new Intent(signup.this,Login.class);
+                startActivity(in);
+            }
+        });
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String email = e1.getText().toString().trim();
+                String password = e2.getText().toString().trim();
+                if (TextUtils.isEmpty(email)) {
+                    Toast.makeText(signup.this, "PLease Enter Email", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                progressDialog.dismiss();
+                if (TextUtils.isEmpty(password)) {
+                    Toast.makeText(signup.this, "PLease Enter Password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                progressDialog.setMessage("REGISTERING USER...");
+                progressDialog.show();
+
+                firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(signup.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful())
+                        {
+                            Toast.makeText(signup.this, "REGISTERED SUCCESSFULLY", Toast.LENGTH_SHORT).show();
+                            UID=firebaseAuth.getCurrentUser().getUid();
+                            Intent i = new Intent(signup.this,detailsactivity.class );
+                            i.putExtra("uid",UID);
+                            startActivity(i);
+
+                        }else
+                        {
+                            Toast.makeText(signup.this, "COULD NOT REGISTER, TRY AGAIN!", Toast.LENGTH_SHORT).show();
+                        }
+                        progressDialog.dismiss();
+                    }
+                });
             }
         });
     }
+
 
 }
